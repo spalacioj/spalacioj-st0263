@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+message ListFiles {
+    repeated string archivos = 1;
+}
+
+message File {
+    string archivo = 1;
+}
+
+message FileStatus {
+    int32 status_code = 1;
+}
+
+service FileService {
+    rpc GetFiles (google.protobuf.Empty) returns (ListFiles) {};
+    rpc AddFile (File) returns (FileStatus) {};
+}
