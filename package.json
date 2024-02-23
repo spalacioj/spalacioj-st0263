@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-server": "node directoryServer.js",
+    "start-client": "node client.js",
+    "start": "concurrently 'npm run start-server' 'npm run start-client'"
   },
   "keywords": [],
   "author": "",
