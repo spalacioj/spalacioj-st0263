@@ -1,83 +1,78 @@
 const dotenv = require('dotenv');
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
 const express = require('express');
 
 dotenv.config();
 
-const PROTO_PATH = process.env.PROTO_PATH;
 const REMOTE_HOST = process.env.REMOTE_HOST;
 
-const packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true
-    });
 
 const app = express();
 app.use(express.json());
 
-const restPORT = 5000;
+const restPORT = 3000;
 
-console.info("Consumer service is started...");
+const usuarios = [];
+const archivos = [];
 
-const productService = grpc.loadPackageDefinition(packageDefinition).FileService;
-
-const client = new productService(REMOTE_HOST, grpc.credentials.createInsecure());
-
-app.post('/agregar', (req,res) => {
-    let { file } = req.body;
-    console.log(file);
-    if(file){
-        res.status(200).send("File succesfully added!");
+app.post('/receive-login', (req,res) => {
+    let { username, password, uri } = req.body;
+    
+    if(username && password && uri){
+        usuarios.push({
+            username,
+            password,
+            uri
+        });
+        console.log(usuarios)
+        res.status(200).send("Cuenta creada correctamente!");
+    } else {
+        res.status(400).send("Error a la hora de iniciar sesion!");
     }
 })
 
-app.get('/archivos', (req,res) => {
-
+app.post('/receive-indexar', (req,res) => {
+    let { username, listaArchivos } = req.body;
+    if(listaArchivos){
+        archivos.push({
+            username,
+            listaArchivos
+        });
+        res.status(200).send("archivos agregados");
+        console.log(archivos);
+    }
 })
 
-app.get('/archivos/:name', (req,res) => {
+app.post('/receive-logout', (req,res) => {
+    let { username } = req.body;
+
+    const indexUsuarios = usuarios.findIndex((usuario) => usuario.username == username);
+    const indexArchivos = archivos.findIndex((usuario) => usuario.username == username);
+    if(indexUsuarios == -1){
+        res.send("usuario no encontrado");
+    } else if(indexArchivos == -1){
+        usuarios.splice(indexUsuarios, 1);
+        res.send("sesion cerrada correctamente");
+    } else {
+        usuarios.splice(indexUsuarios, 1);
+        archivos.splice(indexArchivos, 1);
+        res.send("sesion cerrada correctamente");
+    }
     
 })
 
+app.post('/receive-buscar-archivo', (req,res) => {
+    let { archivo } = req.body;
+    const peersConArchivo = archivos.filter((peers) => peers.listaArchivos.includes(archivo));
+    if(peersConArchivo.length === 0){
+        res.send("No existe ese archivo");
+    } else {
+        res.send(peersConArchivo);
+    }
+})
+
+
 app.listen(restPORT, () => {
-    console.log(`RESTful API is listening on port ${restPORT}`)
+    console.log(`listening on port ${restPORT}`)
   });
 
-/*
-function main(){
-    let archivo = "hola.mp4";
-    const client = new productService(REMOTE_HOST, grpc.credentials.createInsecure());
-
-    client.AddFile({archivo: archivo}, (err, data) => {
-        if(err){
-            console.log(err);
-        } else {
-            console.log('Response received from remote service:', data);
-        }
-    })
-
-    client.AddFile({archivo: 'loki.mp4'}, (err, data) => {
-        if(err){
-            console.log(err);
-        } else {
-            console.log('Response received from remote service:', data);
-        }
-    })
-
-    client.GetFiles({}, (err, data) => {
-        if(err){
-            console.log(err);
-          } else {
-            console.log('Response received from remote service:', data.archivos); // API response
-          }
-    })
-}
-
-main();*/
 
