@@ -14,7 +14,7 @@ El tipo de arquitectura que se usará es P2P no estructurada basada en servidor 
 
 ## 3. Descripción del ambiente de desarrollo y técnico
 
-## 4. Descripción del ambiente de EJECUCIÓN (en producción) lenguaje de programación
+## 4. Descripción del ambiente de EJECUCIÓN (en producción)
 
 # referencias
 ## https://www.youtube.com/watch?v=psYAhc9JUyo

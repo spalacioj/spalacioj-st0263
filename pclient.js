@@ -1,11 +1,26 @@
 const dotenv = require('dotenv');
 const express = require('express');
 const axios = require("axios");
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
 
 dotenv.config();
 
+const PROTO_PATH = process.env.PROTO_PATH;
 const REMOTE_HOST = process.env.REMOTE_HOST;
 
+const packageDefinition = protoLoader.loadSync(
+    PROTO_PATH,
+    {
+        keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true
+});
+
+const productService = grpc.loadPackageDefinition(packageDefinition).FileService;
+const client = new productService(REMOTE_HOST, grpc.credentials.createInsecure());
 
 const app = express();
 app.use(express.json());
@@ -32,7 +47,11 @@ app.post('/login', (req,res) => {
 
 app.post('/indexar', (req,res) => {
     let { username, listaArchivos } = req.body;
-
+    client.AddFile({archivos: listaArchivos}, (err, data) => {
+        if(err){
+            console.log(err);
+        } 
+    });
     const data = {
         username: username,
         listaArchivos: listaArchivos

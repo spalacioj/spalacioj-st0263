@@ -19,26 +19,24 @@ const packageDefinition = protoLoader.loadSync(
 const serviceProto = grpc.loadPackageDefinition(packageDefinition);
 
 const HOST = '0.0.0.0:8080';
-const files = []
-const serverFiles = []
+let files = [];
 
-function GetFiles(call, callback){
-    console.log('Request is received');
-    callback(null, { archivos: files });
-}
 
 function AddFile(call, callback){
-    let file = call.request.archivo;
-    let ip = call.getPeer();
-    files.push(file)
-    serverFiles.push({ ip, file });
-    console.log(serverFiles);
-    callback(null, { status_code: 1 });
+    files = call.request.archivos;
+    console.log(files);
+    callback(null, { });
+}
+
+function GetFile(call, callback) {
+    let IndexFile = files.indexOf(call.request.archivo)
+    let file = files[IndexFile]
+    callback(null, { Nombre: file, linkDescarga: 'www.descargararchivo.com' })
 }
 
 function main(){
     const server = new grpc.Server();
-    server.addService(serviceProto.FileService.service, { GetFiles, AddFile });
+    server.addService(serviceProto.FileService.service, { AddFile, GetFile });
     server.bindAsync(HOST, grpc.ServerCredentials.createInsecure(), (err, port) => {
         if (err != null) {
           return console.error(err);

@@ -22,10 +22,10 @@ console.info("Consumer service is started...");
 const productService = grpc.loadPackageDefinition(packageDefinition).FileService;
 
 function main(){
-    let archivo = "hola.mp4";
+    let archivos = [ 'archivo1', 'archivo2', 'archivo3' ]
     const client = new productService(REMOTE_HOST, grpc.credentials.createInsecure());
 
-    client.AddFile({archivo: archivo}, (err, data) => {
+    client.AddFile({archivos: archivos}, (err, data) => {
         if(err){
             console.log(err);
         } else {
@@ -33,7 +33,7 @@ function main(){
         }
     })
 
-    client.AddFile({archivo: 'loki.mp4'}, (err, data) => {
+    client.GetFile({archivo: "archivo1"}, (err, data) => {
         if(err){
             console.log(err);
         } else {
@@ -41,13 +41,6 @@ function main(){
         }
     })
 
-    client.GetFiles({}, (err, data) => {
-        if(err){
-            console.log(err);
-          } else {
-            console.log('Response received from remote service:', data.archivos); // API response
-          }
-    })
 }
 
 main();

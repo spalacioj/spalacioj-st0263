@@ -10,11 +10,13 @@ message File {
     string archivo = 1;
 }
 
-message FileStatus {
-    int32 status_code = 1;
+message FileInfo {
+    string Nombre = 1;
+    string linkDescarga = 2;
 }
 
 service FileService {
-    rpc GetFiles (google.protobuf.Empty) returns (ListFiles) {};
-    rpc AddFile (File) returns (FileStatus) {};
+    
+    rpc GetFile (File) returns (FileInfo) {};
+    rpc AddFile (ListFiles) returns (google.protobuf.Empty) {};
 }
