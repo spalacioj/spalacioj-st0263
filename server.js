@@ -70,6 +70,12 @@ app.post('/receive-buscar-archivo', (req,res) => {
     }
 })
 
+app.post('/info-usuario', (req,res) => {
+    let { username } = req.body;
+    let usuario = usuarios.find((user) => user.username == username);
+    let uriUsuario = usuario.uri;
+    res.send(uriUsuario);
+})
 
 app.listen(restPORT, () => {
     console.log(`listening on port ${restPORT}`)

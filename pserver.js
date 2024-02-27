@@ -5,6 +5,7 @@ const protoLoader = require('@grpc/proto-loader');
 dotenv.config();
 
 const PROTO_PATH = process.env.PROTO_PATH;
+const HOST = process.env.HOST;
 
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -18,7 +19,7 @@ const packageDefinition = protoLoader.loadSync(
 
 const serviceProto = grpc.loadPackageDefinition(packageDefinition);
 
-const HOST = '0.0.0.0:8080';
+
 let files = [];
 
 
