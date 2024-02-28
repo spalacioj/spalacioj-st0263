@@ -100,7 +100,7 @@ app.post('/buscar-archivo', (req,res) => {
     })
 })
 
-app.get('/descargar/:file', (req,res) => {
+/*app.get('/descargar/:file', (req,res) => {
     const archivo = req.params.file;
     const data = {
         archivo: archivo
@@ -137,6 +137,33 @@ app.get('/descargar/:file', (req,res) => {
     .catch(error => {
         console.error("ocurrio un error1");
         res.status(400).status("No se encontro el archivo");
+    })
+})*/
+
+
+app.get('/descargar/:file', (req,res) => {
+    const archivo = req.params.file;
+    const data = {
+        archivo: archivo
+    }
+    axios.post('http://localhost:3000/info-usuario', data)
+    .then(response => {
+        let peerHOST = response.data;
+        console.log(peerHOST);
+        const client = new productService(peerHOST, grpc.credentials.createInsecure());
+        client.GetFile({archivo: archivo}, (err, data) => {
+            if(err){
+                console.log("ocurrio un error");
+            } else {
+                console.log('Response received from remote service:', data);
+                res.status(200).send(data);
+            }
+            client.close()
+        })
+    })
+    .catch(error => {
+        console.error("error");
+        res.status(404).send("Error, archivo no encontrado");
     })
 })
 

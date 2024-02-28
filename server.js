@@ -70,12 +70,22 @@ app.post('/receive-buscar-archivo', (req,res) => {
     }
 })
 
-app.post('/info-usuario', (req,res) => {
+/*app.post('/info-usuario', (req,res) => {
     let { username } = req.body;
+    console.log(username);
     let usuario = usuarios.find((user) => user.username == username);
     let uriUsuario = usuario.uri;
     res.send(uriUsuario);
-})
+})*/
+
+app.post('/info-usuario', (req,res) => {
+    let { archivo } = req.body;
+    const peersConArchivo = archivos.filter((peers) => peers.listaArchivos.includes(archivo));
+    let username = peersConArchivo[0].username;
+    let usuario = usuarios.find((user) => user.username == username);
+    let uriUsuario = usuario.uri;
+    res.send(uriUsuario);
+}) 
 
 app.listen(restPORT, () => {
     console.log(`listening on port ${restPORT}`)
