@@ -33,13 +33,18 @@ app.post('/receive-login', (req,res) => {
     let { username, password, uri } = req.body;
     
     if(username && password && uri){
-        usuarios.push({
-            username,
-            password,
-            uri
-        });
-        console.log(usuarios)
-        res.status(200).send("Cuenta creada correctamente!");
+        let usuarioExistente = usuarios.find((user) => user.username == username)
+        if(usuarioExistente){
+            res.status(400).send("Ya existe una cuenta con ese nombre");
+        } else {
+            usuarios.push({
+                username,
+                password,
+                uri
+            });
+            console.log(usuarios);
+            res.status(200).send("Cuenta creada correctamente");
+        }
     } else {
         res.status(400).send("Error a la hora de iniciar sesion!");
     }

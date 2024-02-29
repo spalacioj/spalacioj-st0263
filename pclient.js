@@ -40,8 +40,12 @@ app.post('/login', (req,res) => {
         res.send(response.data);
     })
     .catch(error => {
-        console.error('Error al enviar datos al servidor:', error);
-        res.status(400).send('Error al enviar datos al servidor');
+        if(error.response.data == "Ya existe una cuenta con ese nombre"){
+            res.send(error.response.data);
+        }else {
+            console.error('Error al enviar datos al servidor:', );
+            res.status(400).send('Error al enviar datos al servidor');
+        }
     });
 })
 
