@@ -24,7 +24,13 @@ let files = [];
 
 
 function AddFile(call, callback){
-    files = call.request.archivos;
+    let listFiles = call.request.archivos;
+    for(let i=0; i<listFiles.length; i++) {
+        let file = listFiles[i];
+        if(!files.includes(file)){
+            files.push(file);
+        }
+    }
     console.log(files);
     callback(null, { });
 }

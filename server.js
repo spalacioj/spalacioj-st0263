@@ -1,10 +1,4 @@
-const dotenv = require('dotenv');
 const express = require('express');
-
-dotenv.config();
-
-const REMOTE_HOST = process.env.REMOTE_HOST;
-
 
 const app = express();
 app.use(express.json());
@@ -13,6 +7,27 @@ const restPORT = 3000;
 
 const usuarios = [];
 const archivos = [];
+
+function agregarArchivos(usuario, arrayArchivos){
+    let encontrado = false;
+    for(let i = 0; i < archivos.length; i++){
+        if(archivos[i].username == usuario){
+            for(let j = 0; j < arrayArchivos.length; j++){
+                if(!archivos[i].listaArchivos.includes(arrayArchivos[j])){
+                    archivos[i].listaArchivos.push(arrayArchivos[j]);
+                }
+            }
+            encontrado = true;
+            break;
+        }
+    }
+    if(!encontrado){
+        archivos.push({
+            username: usuario,
+            listaArchivos: arrayArchivos
+        });
+    }
+}
 
 app.post('/receive-login', (req,res) => {
     let { username, password, uri } = req.body;
@@ -32,11 +47,8 @@ app.post('/receive-login', (req,res) => {
 
 app.post('/receive-indexar', (req,res) => {
     let { username, listaArchivos } = req.body;
-    if(listaArchivos){
-        archivos.push({
-            username,
-            listaArchivos
-        });
+    if(listaArchivos && username){
+        agregarArchivos(username, listaArchivos);
         res.status(200).send("archivos agregados");
         console.log(archivos);
     }
