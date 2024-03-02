@@ -80,20 +80,24 @@ app.post('/receive-logout', (req,res) => {
 app.post('/receive-buscar-archivo', (req,res) => {
     let { archivo } = req.body;
     const peersConArchivo = archivos.filter((peers) => peers.listaArchivos.includes(archivo));
+    let uriPeersConArchivo = [];
+    for(let i = 0; i < peersConArchivo.length; i++){
+        let usuario = usuarios.find((user) => user.username == peersConArchivo[0].username);
+        uriPeersConArchivo.push(usuario.uri);
+    }
+    let response = [];
+    for(let i = 0; i < uriPeersConArchivo.length; i++){
+        response.push({
+            archivo: archivo,
+            link: uriPeersConArchivo[i]
+        })
+    }
     if(peersConArchivo.length === 0){
         res.send("No existe ese archivo");
     } else {
-        res.send(peersConArchivo);
+        res.send(response);
     }
 })
-
-/*app.post('/info-usuario', (req,res) => {
-    let { username } = req.body;
-    console.log(username);
-    let usuario = usuarios.find((user) => user.username == username);
-    let uriUsuario = usuario.uri;
-    res.send(uriUsuario);
-})*/
 
 app.post('/info-usuario', (req,res) => {
     let { archivo } = req.body;

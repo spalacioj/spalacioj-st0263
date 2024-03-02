@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-server": "node directoryServer.js",
-    "start-client": "node client.js",
-    "start": "concurrently \"node pserver.js\" \"node server.js\" \"node pclient.js\""
+    "start-peer": "concurrently \"node pserver.js\" \"node pclient.js\"",
+    "start-all": "concurrently \"node pserver.js\" \"node server.js\" \"node pclient.js\""
   },
   "keywords": [],
   "author": "",
