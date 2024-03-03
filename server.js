@@ -82,7 +82,7 @@ app.post('/receive-buscar-archivo', (req,res) => {
     const peersConArchivo = archivos.filter((peers) => peers.listaArchivos.includes(archivo));
     let uriPeersConArchivo = [];
     for(let i = 0; i < peersConArchivo.length; i++){
-        let usuario = usuarios.find((user) => user.username == peersConArchivo[0].username);
+        let usuario = usuarios.find((user) => user.username == peersConArchivo[i].username);
         uriPeersConArchivo.push(usuario.uri);
     }
     let response = [];
